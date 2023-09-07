@@ -41,33 +41,7 @@
      1. The Docker client contacted the Docker daemon.
      2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
       (amd64)
-     3. The Docker daemon created a new container from that image which runs the
-      executable that produces the output you are currently reading.
-     4. The Docker daemon streamed that output to the Docker client, which sent it
-      to your terminal.
-
-     To try something more ambitious, you can run an Ubuntu container with:
-       $ docker run -it ubuntu bash
-
-     Share images, automate workflows, and more with a free Docker ID:
-       https://hub.docker.com/
- 
-     For more examples and ideas, visit:
-       https://docs.docker.com/get-started/
-     ```
-
----
-# Docker 권한 설정
-- docker 관련 작업이 root 유저에게만 권한이 있어서 명령을 수행하려면 sudo를 붙여야 했음
-- root 유저가 아닌 host의 기본 유저에게도 권한을 주려면 새로운 터미널에서 아래 명령 실행
-  ```
-  $ sudo usermod -a -G docker $USER
-  $ sudo service docker restart
-  ```
-- VM 재부팅하고 docker ps 실행하면 정상적으로 출력
-
----
-# Docker 기본 명령
+     3. The Docker daemon created a new conta어
 1. Docker pull
   - docker image resptiory 부터 Docker image를 가져오는 커맨드
     ```
@@ -121,9 +95,11 @@
      ---------------------------------------------
      oh@oh-VirtualBox:~$ docker run -it -d --name demo2 ubuntu:18.04
      6abb4d3e4210fcbc28c70af28d2c22f9195abae12807621c25c92ad49dea3e6d
+
      oh@oh-VirtualBox:~$ docker ps
      CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS         PORTS     NAMES
      6abb4d3e4210   ubuntu:18.04   "/bin/bash"   3 seconds ago   Up 2 seconds             demo2
+
      oh@oh-VirtualBox:~$ docker exec -it demo2 /bin/bash
      root@6abb4d3e4210:/#
      ```
@@ -137,6 +113,7 @@
      8fbb42fb3a75   ubuntu:18.04   "/bin/bash"   22 minutes ago      Exited (127) 22 minutes ago              demo1
      839c9da414dd   hello-world    "/hello"      About an hour ago   Exited (0) About an hour ago             nifty_easley
      7d119d00cb0e   hello-world    "/hello"      23 hours ago        Exited (0) 23 hours ago                  peaceful_grothendieck
+
      oh@oh-VirtualBox:~$ docker exec -it demo2 /bin/bash
      root@6abb4d3e4210:/#
      ```

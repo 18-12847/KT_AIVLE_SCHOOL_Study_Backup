@@ -70,6 +70,8 @@
     - docker.io/library 라는 이름의 repository에서 ubuntu:18.04 image 다운로드
     - private 한 repository에서 docker image를 가져오려면 docker login을 통해서 repository를 보게 한 뒤, docker pull을 수행하는 형태로 사용
 2. Docker images
+   - 어떤 애플리케이션에 대해서 단순히 애플리케이션 코드뿐만 아니라 그 애플리케이션과 dependent 한 모든 것을 함께 패키징한 데이터
+   - 어디에서나 컨테이너 형식으로 run 가능한 데이터터
    - 로컬에 존재하는 docker image 리스트를 출력하는 커맨드
      ```
      $ docker images

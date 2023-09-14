@@ -231,4 +231,137 @@
         1 file pushed
         ```
         - 해당 링크로 이동해서 구글 로그인 후 인증하면 Authentication successful 메시지
-        - 해당 폴더로 이동하면 폴더가 하나 생성되고 파일이 업로드 
+        - 해당 폴더로 이동하면 폴더가 하나 생성되고 파일이 업로드
+   8) dvc pull
+      - 데이터를 remote storage에서 다운로드
+        ```
+        # dvc 캐시 삭제
+        oh@oh-VirtualBox:~/dvc-tutorial$ rm -rf .dvc/cache/
+
+        #dvc push 했던 데이터 삭제
+        oh@oh-VirtualBox:~/dvc-tutorial$ rm -rf data/demo.txt
+
+        #dvc pull로 google drive에 업로드했던 데이터 다운로드
+        oh@oh-VirtualBox:~/dvc-tutorial$ dvc pull
+        A       data/demo.txt 
+        1 file added and 1 file fetched
+
+        oh@oh-VirtualBox:~/dvc-tutorial$ ls
+        README.md  data
+
+        #데이터 확인
+        oh@oh-VirtualBox:~/dvc-tutorial$ cat data/demo.txt
+        hello
+        ```
+   9) dvc checkout
+       - data의 버전 변경하는 명령어
+       - 버전 변경 테스트를 위해 새로운 버전의 data를 dvc push
+         ```
+         oh@oh-VirtualBox:~/dvc-tutorial$ cd data
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ ls
+         demo.txt  demo.txt.dvc
+
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ vi demo.txt
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ cat demo.txt
+         hello!!
+
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ cd ..
+         oh@oh-VirtualBox:~/dvc-tutorial$ dvc push
+         1 file pushed
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ git pull origin main
+
+         remote: Enumerating objects: 1, done.
+         remote: Counting objects: 100% (1/1), done.
+         remote: Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
+         오브젝트 묶음 푸는 중: 100% (1/1), 633 바이트 | 105.00 KiB/s, 완료.
+         https://github.com/18-12847/DVC_Tuto URL에서
+          * branch            main       -> FETCH_HEAD
+            077dd51..4683d2a  main       -> origin/main
+         힌트: You have divergent branches and need to specify how to reconcile them.
+         힌트: You can do so by running one of the following commands sometime before
+         힌트: your next pull:
+         힌트: 
+         힌트:   git config pull.rebase false  # merge (the default strategy)
+         힌트:   git config pull.rebase true   # rebase
+         힌트:   git config pull.ff only       # fast-forward only
+         힌트: 
+         힌트: You can replace "git config" with "git config --global" to set a default
+         힌트: preference for all repositories. You can also pass --rebase, --no-rebase,
+         힌트: or --ff-only on the command line to override the configured default per
+         힌트: invocation.
+         fatal: Need to specify how to reconcile divergent branches.
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ git merge origin/main
+         Merge made by the 'ort' strategy. 
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ git push origin master:main
+         
+         Username for 'https://github.com': 18-12847
+         Password for 'https://18-12847@github.com': 
+         오브젝트 나열하는 중: 8, 완료.
+         오브젝트 개수 세는 중: 100% (8/8), 완료.
+         Delta compression using up to 6 threads
+         오브젝트 압축하는 중: 100% (5/5), 완료.
+         오브젝트 쓰는 중: 100% (5/5), 565 바이트 | 565.00 KiB/s, 완료.
+         Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+         remote: Resolving deltas: 100% (2/2), completed with 1 local object.
+         To https://github.com/18-12847/DVC_Tuto.git
+         4683d2a..e7e2580  master -> main
+         ```
+         - git push 전에 pull로 최신 버전 가져오고 충돌 일어나면 git merge origin/main
+         - nano 텍스트 편집기가 뜨는데 ctrl + o -> Enter -> ctrl + x로 merge 후 push
+         - dvc push 이후 구글 드라이브 들어가면 새로운 파일이 정상적으로 업로드
+           - 역시 새로운 폴더 및 파일이 추가로 생성, 열어보면 방금 수정한 파일
+       
+       - 이전 버전의 data로 돌아가기
+         ```
+         #git log 확인
+         oh@oh-VirtualBox:~/dvc-tutorial$ git log --oneline
+         e7e2580 (HEAD -> master, origin/main) Merge remote-tracking branch 'origin/main'
+         04f7bcb Update demo.txt
+         4683d2a Merge pull request #1 from 18-12847/master
+         c51a0c5 (origin/master) add remote storage
+         077dd51 Add demo.txt.dvc #해당 해시 값으로 돌아간다
+         c2abd56 Initial commit
+
+         #이전 commit 버전으로 되돌린다
+         oh@oh-VirtualBox:~/dvc-tutorial$ git checkout 077dd51 data/demo.txt.dvc
+         1 경로가 0a2f9e1에서 갱신되었습니다
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ dvc checkout
+         M       data/demo.txt
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ cd data
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ cat demo.txt
+         hello
+
+         oh@oh-VirtualBox:~/dvc-tutorial/data$ cd ..
+         oh@oh-VirtualBox:~/dvc-tutorial$ git add data/demo.txt.dvc
+         oh@oh-VirtualBox:~/dvc-tutorial$ git commit -m "checkout and commit"
+         [master 20fc26b] checkout and commit
+          1 file changed, 2 insertions(+), 2 deletions(-)
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ git pull origin main
+         https://github.com/18-12847/DVC_Tuto URL에서
+          * branch            main       -> FETCH_HEAD
+         이미 업데이트 상태입니다.
+
+         oh@oh-VirtualBox:~/dvc-tutorial$ git push origin master:main
+         
+         Username for 'https://github.com': 18-12847
+         Password for 'https://18-12847@github.com': 
+         오브젝트 나열하는 중: 7, 완료.
+         오브젝트 개수 세는 중: 100% (7/7), 완료.
+         Delta compression using up to 6 threads
+         오브젝트 압축하는 중: 100% (4/4), 완료.
+         오브젝트 쓰는 중: 100% (4/4), 420 바이트 | 420.00 KiB/s, 완료.
+         Total 4 (delta 1), reused 0 (delta 0), pack-reused 0
+         To https://github.com/18-12847/DVC_Tuto.git
+            e7e2580..20fc26b  master -> main
+         ```
+# 3. DVC의 추가 기능
+- Python API를 이용한 제어 : https://dvc.org/doc/api-reference
+- S3, HDFS, SSH 등의 remote storage 연동
+- DAG를 통한 Data pipeline 관리 : https://dvc.org/doc/start/data-management/data-pipelines
+- dvc metrics, dvc plots을 사용한 각 실험의 metrics 기록 및 시각화 등
